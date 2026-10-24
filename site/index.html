@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Couch</title>
+    <meta name="description" content="A lazy pixel guy on a driving couch who does your computer chores on Windows. He complains. He does them anyway." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      /* Warm paper, ink and one rust accent: the colors of the couch itself. Light on purpose: it is a living room, not a terminal. */
+      :root { --ink: #1d1b19; --paper: #fffaf0; --cream: #f6ecd9; --rust: #b5562e; --rust-dark: #7d3a1f; --muted: #6b645c; --line: #d9c9ac; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--paper); color: var(--ink); font: 18px/1.6 'Atkinson Hyperlegible', system-ui, sans-serif; }
+      main { max-width: 760px; margin: 0 auto; padding: 48px 16px 40px; }
+      h1, h2 { font-family: 'Pixelify Sans', system-ui, sans-serif; font-weight: 700; line-height: 1.1; }
+      h1 { font-size: clamp(48px, 11vw, 84px); margin: 0; letter-spacing: 1px; }
+      h2 { font-size: 30px; margin: 0 0 12px; }
+      a { color: var(--rust-dark); }
+      .lede { font-size: 22px; margin: 8px 0 28px; max-width: 32ch; }
+      .get { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+      .dl { font: 700 20px 'Pixelify Sans', system-ui, sans-serif; background: var(--rust); color: var(--paper); padding: 14px 24px; border: 3px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--ink); text-decoration: none; }
+      .dl:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--ink); }
+      .dl:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+      .dl:focus-visible, .ask button:focus-visible { outline: 3px solid var(--rust); outline-offset: 3px; }
+      .small { color: var(--muted); font-size: 15px; }
+
+      .room { position: relative; margin: 84px -16px 0; }
+      #stage { display: block; width: 100%; image-rendering: pixelated; border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink); cursor: pointer; }
+      #bubble { position: absolute; bottom: calc(100% - 6px); margin: 0; max-width: 220px; background: var(--paper); border: 3px solid var(--ink); border-radius: 4px; padding: 6px 10px; font-size: 16px; line-height: 1.3; }
+      #bubble::after { content: ''; position: absolute; left: 40px; bottom: -9px; width: 12px; height: 12px; background: var(--paper); border-right: 3px solid var(--ink); border-bottom: 3px solid var(--ink); transform: rotate(45deg); }
+      .ask { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 6px; }
+      .ask button { font: inherit; font-size: 16px; background: var(--cream); color: var(--ink); border: 2px solid var(--ink); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+      .ask button:hover { background: #efe0c4; }
+      .ask .rude { border-style: dashed; }
+      body.busy .ask button { opacity: 0.55; cursor: progress; }
+
+      section { margin-top: 64px; }
+      .chores { list-style: none; padding: 0; margin: 0; }
+      .chores li { padding: 12px 0; border-bottom: 2px dotted var(--line); }
+      .chores b { display: block; }
+      .chores span { color: var(--muted); font-style: italic; }
+      .never { columns: 2 220px; padding-left: 20px; margin: 0; }
+      .never li { margin: 4px 0; break-inside: avoid; }
+      .note { background: var(--cream); border: 2px solid var(--ink); border-radius: 4px; padding: 14px 16px; margin-top: 16px; }
+      ol { padding-left: 22px; }
+      ol li { margin: 6px 0; }
+      kbd { font: 15px ui-monospace, Consolas, monospace; background: var(--cream); border: 2px solid var(--ink); border-bottom-width: 3px; border-radius: 4px; padding: 0 5px; }
+      footer { margin-top: 72px; color: var(--muted); font-size: 15px; }
+      @media (prefers-reduced-motion: reduce) { .dl:hover, .dl:active { transform: none; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Couch</h1>
+      <p class="lede">A lazy guy on a driving couch who does your computer chores. He complains. He does them anyway.</p>
+      <div class="get">
+        <a class="dl" href="https://github.com/ronaksarda/couch-releases/releases/latest">Download for Windows</a>
+        <span class="small">Windows 10 and 11. Free.</span>
+      </div>
+
+      <div class="room">
+        <p id="bubble" role="status" aria-live="polite" hidden></p>
+        <canvas id="stage" aria-label="The couch guy asleep in his living room. Pick a request below."></canvas>
+      </div>
+      <div class="ask" role="group" aria-label="Ask him something">
+        <button type="button" data-ask="lamp">Turn on the lamp</button>
+        <button type="button" data-ask="tv">Put something on</button>
+        <button type="button" data-ask="file">Grab my lease PDF</button>
+        <button type="button" data-ask="rude" class="rude">You're useless</button>
+        <button type="button" data-ask="sorry">Sorry</button>
+      </div>
+      <p class="small">This is a toy room. The real one lives in the corner of your screen and drives to your actual files, videos and smart lights.</p>
+
+      <section>
+        <h2>His job description</h2>
+        <ul class="chores">
+          <li><b>Finds files by what's inside them.</b> "The lease from last month" works, even if it's named scan_0042.pdf. <span>"Two leases. Pick one."</span></li>
+          <li><b>Puts on something you like.</b> Asks what you watch once, then picks from it. Thumbnails pop up, you click one. <span>"Some options. Choose. I will wait."</span></li>
+          <li><b>Looks things up on a site you name.</b> "Pricing page on stripe.com" gets you the actual page, checked. <span>"Hold on, lemme look."</span></li>
+          <li><b>Runs the lights, AC and plugs.</b> Hue, Home Assistant, Shelly, Tasmota. No smart home? There's a pretend one to boss around. <span>"Pressing the button. Very hard."</span></li>
+          <li><b>Reads your screen, only when you ask.</b> "What's this error?" and he takes one look. Nothing is kept. <span>"Mm. Working on it. Allegedly."</span></li>
+          <li><b>Timers, reminders, notes, dimming the screen, opening apps.</b> <span>"Done. You owe me a snack."</span></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Not in his job description</h2>
+        <ul class="never">
+          <li>Deleting your files</li>
+          <li>Paying for anything</li>
+          <li>Typing passwords</li>
+          <li>Sending messages as you</li>
+          <li>Running commands</li>
+          <li>Changing system settings</li>
+        </ul>
+        <p class="note">Anything that changes stuff, like moving a file, downloading, or unlocking a door, waits for you to tap Yes. Saying "yes" out loud doesn't count. He checked.</p>
+      </section>
+
+      <section>
+        <h2>Manners</h2>
+        <p>He does your chores, so be decent. Swear at the printer all you like. Insult him once and he grumbles and still does it. Twice in half an hour and he goes on strike until you say sorry. Say thanks and he notices.</p>
+      </section>
+
+      <section>
+        <h2>Getting him home</h2>
+        <ol>
+          <li>Run the installer. Windows may say "unknown publisher" because the app is new: click <b>More info</b>, then <b>Run anyway</b>.</li>
+          <li>Setup opens. Paste a free Gemini key from <a href="https://aistudio.google.com/apikey">Google AI Studio</a>. That's his brain, and it's fast.</li>
+          <li>Voice (ElevenLabs), web search (SerpApi) and page reading (Browserbase) are optional. Skip any; the rest still works.</li>
+          <li>Tick the folders he may look in, answer five quick questions or skip them.</li>
+          <li>Click him, or press <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>Space</kbd>, and ask.</li>
+        </ol>
+        <p class="small">He idles at a few frames a second and indexes files slowly in the background, so an older laptop stays usable.</p>
+      </section>
+
+      <section>
+        <h2>Where your stuff goes</h2>
+        <p>Your keys stay in <code>%APPDATA%\couch\.env</code> on your PC. File names and contents go to the brain only if you tick that in setup. Voice goes to ElevenLabs only while the mic button is on. Search words go to SerpApi, page addresses to Browserbase. Your taste profile stays on your PC unless you add your own MongoDB. The tray has "Forget me", which wipes it.</p>
+      </section>
+
+      <footer>Open source, MIT license. Built for the Hacktoberfest 2026 "Slow and Steady" challenge. Made slowly, on purpose.</footer>
+    </main>
+    <script src="couch.js"></script>
+  </body>
+</html>

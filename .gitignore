@@ -1,0 +1,35 @@
+# dependencies and build output
+node_modules/
+dist/
+release/
+*.tsbuildinfo
+.vite/
+coverage/
+
+# secrets: only the example is committed
+.env
+.env.*
+!.env.example
+
+# runtime data the app or tests write next to the code
+habit-days.json
+habit-offers.json
+test/tmp-*/
+*.log
+*.jsonl
+
+# demo recordings and renders
+*.mp4
+*.mkv
+*.mov
+*.webm
+
+# local tooling
+.claude/settings.local.json
+.vscode/
+.idea/
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store

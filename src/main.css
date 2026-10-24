@@ -1,0 +1,710 @@
+:root {
+  --ink: #1d1b19;
+  --paper: #fffaf0;
+  --accent: #b5562e;
+  --muted: #6b645c;
+  font-family: system-ui, 'Segoe UI', sans-serif;
+  font-size: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- couch window: transparent, fixed 240x210 ---------- */
+
+body.couch {
+  margin: 0;
+  width: 240px;
+  height: 210px;
+  overflow: hidden;
+  background: transparent;
+  user-select: none;
+  position: relative;
+}
+
+.bubble {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 4px;
+  padding: 6px 9px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.3;
+  max-height: 52px;
+  overflow: hidden;
+}
+
+.ask {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 4px;
+  z-index: 2;
+}
+
+.ask input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+.stage {
+  position: absolute;
+  left: 24px;
+  bottom: 0;
+  width: 192px;
+  height: 144px;
+}
+
+#sprite {
+  width: 192px;
+  height: 144px;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.collapse,
+.quit {
+  position: absolute;
+  top: 0;
+  right: 26px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 700 12px/1 system-ui;
+  cursor: pointer;
+}
+
+.quit {
+  right: 0;
+}
+
+.quit:hover {
+  background: #d2382b;
+  color: #fff;
+}
+
+body.collapsed .quit {
+  display: none;
+}
+
+.mic {
+  position: absolute;
+  top: 0;
+  right: 52px;
+  width: 24px;
+  height: 20px;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.mic.on {
+  background: #d2382b;
+  color: #fff;
+}
+
+body.collapsed .mic {
+  display: none;
+}
+
+body.collapsed .bubble,
+body.collapsed .ask {
+  display: none;
+}
+
+/* ---------- results window ---------- */
+
+body.results {
+  margin: 0;
+  padding: 0 12px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.cards li {
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff;
+}
+
+.cards h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.cards p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.sheet {
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  max-width: 300px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.sheet dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+}
+
+.sheet dt {
+  font-weight: 700;
+}
+
+.sheet dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.sheet .shot {
+  display: block;
+  max-width: 100%;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  margin: 0 0 10px;
+}
+
+.sheet-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.sheet-buttons button {
+  font: inherit;
+  padding: 8px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.sheet-buttons .yes {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------- result sets, undo ---------- */
+
+.cards .set ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.cards .set ol li {
+  border-top: 1px solid #ddd;
+  padding-top: 6px;
+}
+
+.pop-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 0 -12px 10px;
+  padding: 8px 10px;
+  background: var(--paper);
+  border-bottom: 2px solid var(--ink);
+  -webkit-app-region: drag; /* drag the popup by its header */
+}
+
+.pop-head button {
+  -webkit-app-region: no-drag;
+  font: inherit;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.pop-summary {
+  flex: 1;
+  text-align: left;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 0;
+}
+
+.pop-close {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+body.compact {
+  overflow: hidden;
+}
+
+body.compact main {
+  display: none;
+}
+
+.cards .thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.cards .snippet {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.bar button,
+.set > button,
+.undo {
+  font: inherit;
+  padding: 4px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.bar .yes {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.set.done .yes,
+.set.done > button {
+  display: none;
+}
+
+.undo {
+  margin-bottom: 10px;
+}
+
+/* ---------- devices panel ---------- */
+
+body.devices {
+  margin: 0;
+  padding: 10px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.dev-head {
+  -webkit-app-region: drag;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dev-head h1 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.dev-head button {
+  -webkit-app-region: no-drag;
+  font: inherit;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: #fff;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.tiles {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 8px;
+}
+
+.tile {
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px;
+  text-align: center;
+}
+
+.tile.real {
+  border-style: double;
+  border-width: 4px;
+}
+
+.tile canvas {
+  width: 96px;
+  height: 64px;
+  image-rendering: pixelated;
+}
+
+.tile h2 {
+  font-size: 13px;
+  margin: 2px 0 0;
+}
+
+.tile p {
+  font-size: 11px;
+  margin: 0;
+}
+
+body.compact .tiles {
+  grid-template-columns: 1fr;
+  gap: 4px;
+}
+
+body.compact .tile {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  text-align: left;
+  padding: 4px 8px;
+}
+
+body.compact .tile canvas {
+  display: none;
+}
+
+/* ---------- setup and privacy pages ---------- */
+
+body.page {
+  margin: 0;
+  padding: 20px;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+body.page main {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+body.page h1 {
+  font-size: 20px;
+}
+
+body.page button {
+  font: inherit;
+  padding: 6px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+body.page button.primary {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+body.page button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+body.page fieldset {
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+body.page fieldset label {
+  display: block;
+  margin: 4px 0;
+  overflow-wrap: anywhere;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.row input[type='text'] {
+  flex: 1;
+  min-width: 200px;
+  font: inherit;
+  padding: 6px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+
+.question {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+progress {
+  width: 100%;
+}
+
+table.privacy {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+
+table.privacy th,
+table.privacy td {
+  border: 1px solid #c9c0b3;
+  padding: 6px;
+  text-align: left;
+  vertical-align: top;
+}
+
+table.privacy th {
+  background: #f1e8d8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.keys input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  padding: 6px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+
+/* ---------- results popup: cozy pass ----------
+   Cream backdrop, paper slips for results, one rust header. The only shadow is on the slips:
+   they sit on the cream like notes on a table. */
+
+body.results {
+  --cream: #f6ecd9;
+  background: var(--cream);
+  font-size: 14px;
+}
+
+.pop-head {
+  background: var(--accent);
+  border-bottom-color: var(--ink);
+}
+
+.pop-head button {
+  color: var(--paper);
+}
+
+.pop-summary::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 9px;
+  margin-right: 8px;
+  vertical-align: 1px;
+  /* a tiny couch: back, seat, two legs */
+  background:
+    linear-gradient(var(--paper), var(--paper)) 0 0 / 4px 7px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) 0 4px / 14px 3px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) 1px 7px / 2px 2px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) 11px 7px / 2px 2px no-repeat;
+}
+
+.cards li {
+  background: var(--paper);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.cards .set ol li {
+  box-shadow: none;
+  border: 0;
+  border-top: 2px dotted #d9c9ac;
+  border-radius: 0;
+  padding: 8px 0 4px;
+  background: transparent;
+}
+
+.cards .set ol li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.cards h2 {
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.cards .kind {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 5px;
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: lowercase;
+  vertical-align: 1px;
+}
+
+.bar button:first-child:not(.yes) {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.bar button:hover,
+.set > button:hover {
+  background: #efe0c4;
+}
+
+.bar .yes:hover,
+.bar button:first-child:not(.yes):hover {
+  background: #9c4626;
+}
+
+#empty {
+  margin: 4px 0 0;
+}
+
+.cards .picked {
+  margin: 0 0 6px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* answer cards: readable text, real lists, slim scrollbar inside the frame */
+.cards li.answer {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cards li.answer p + p,
+.cards li.answer ul,
+.cards li.answer ol {
+  margin-top: 8px;
+}
+
+.cards li.answer ul,
+.cards li.answer ol {
+  margin-bottom: 0;
+  padding-left: 20px;
+}
+
+.cards li.answer ul li,
+.cards li.answer ol li {
+  border: 0;
+  box-shadow: none;
+  padding: 0 0 4px;
+  background: transparent;
+  white-space: normal;
+}
+
+body.results::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.results::-webkit-scrollbar-thumb {
+  background: #c9b48a;
+  border-radius: 4px;
+}
+
+body.results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bubble {
+  max-height: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* the line-clamp display above must not beat [hidden]: an empty bubble showed as a bar */
+.bubble[hidden],
+.ask[hidden] {
+  display: none;
+}
+
+/* while typing, the input replaces the bubble instead of stacking on it */
+body.couch:has(.ask:not([hidden])) .bubble {
+  display: none;
+}
+
+/* one clean border on the input, no second focus ring around it */
+.ask input:focus,
+.ask input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}

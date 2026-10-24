@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <title>What leaves this machine</title>
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+  <body class="page">
+    <main>
+      <h1>What leaves this machine</h1>
+      <p>
+        Your files and the file index stay on this computer. With the default local brain (Gemma through Ollama), file names, file contents and
+        the model's reasoning never leave it. Voice, web search, the cloud browser, memory and error tracing are cloud services, listed below.
+        Turn voice off and skip web tools, and a request makes no network call at all.
+      </p>
+      <div id="privacy"></div>
+      <p class="muted">Never stored in the cloud: file paths, file names, file contents, request text, web addresses, device names, API keys.</p>
+    </main>
+    <script type="module" src="./privacy-page.ts"></script>
+  </body>
+</html>

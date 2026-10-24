@@ -1,0 +1,11 @@
+# Render blueprint: one static page (site/index.html). No build step.
+services:
+  - type: web
+    name: couch-site
+    runtime: static
+    buildCommand: echo "static site, nothing to build"
+    staticPublishPath: ./site
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff

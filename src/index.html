@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <title>Couch</title>
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+  <body class="couch">
+    <div id="bubble" class="bubble" aria-hidden="true" hidden></div>
+    <div id="said" class="sr-only" role="status" aria-live="polite"></div>
+    <form id="ask" class="ask hit" hidden>
+      <label for="askText" class="sr-only">Ask the couch guy</label>
+      <input id="askText" type="text" maxlength="500" autocomplete="off" placeholder="Type it. I'll get to it." />
+    </form>
+    <div class="stage">
+      <canvas id="sprite" aria-label="Couch guy" role="img"></canvas>
+      <button id="mic" class="mic hit" type="button" aria-label="Talk to him" aria-pressed="false" title="Talk (click, speak, he stops when you go quiet)">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="1" width="6" height="9" rx="3" fill="currentColor" /><path d="M3 7v1a5 5 0 0 0 10 0V7M8 13v2M5 15h6" stroke="currentColor" stroke-width="1.6" fill="none" /></svg>
+      </button>
+      <button id="collapse" class="collapse hit" type="button" aria-label="Collapse couch" title="Collapse">–</button>
+      <button id="quit" class="quit hit" type="button" aria-label="Quit Couch" title="Quit Couch">✕</button>
+    </div>
+    <script type="module" src="./couch.ts"></script>
+  </body>
+</html>

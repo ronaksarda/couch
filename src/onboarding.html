@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <title>Couch setup</title>
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+  <body class="page">
+    <main>
+      <section id="s0" aria-labelledby="h0">
+        <h1 id="h0">Step 1 of 3: the brain</h1>
+        <p id="brainText" aria-live="polite">Checking for the local brain...</p>
+        <div class="row">
+          <button id="install" type="button" hidden>Get Ollama</button>
+          <button id="check" type="button">Check again</button>
+          <button id="download" type="button" class="primary" hidden></button>
+        </div>
+        <progress id="bar" max="100" value="0" hidden></progress>
+        <fieldset>
+          <legend>API keys (saved only on this PC)</legend>
+          <p class="muted">Fastest setup: paste a free Gemini key and skip the 3 GB local brain. The rest are optional.</p>
+          <form id="keysForm" class="keys">
+            <label>Gemini (brain) <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">get one</a> <span id="k-GEMINI_API_KEY" class="muted"></span>
+              <input name="GEMINI_API_KEY" type="password" autocomplete="off" maxlength="200" /></label>
+            <label>ElevenLabs (voice) <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" rel="noopener">get one</a> <span id="k-ELEVENLABS_API_KEY" class="muted"></span>
+              <input name="ELEVENLABS_API_KEY" type="password" autocomplete="off" maxlength="200" /></label>
+            <label>SerpApi (web and YouTube search) <a href="https://serpapi.com/manage-api-key" target="_blank" rel="noopener">get one</a> <span id="k-SERPAPI_API_KEY" class="muted"></span>
+              <input name="SERPAPI_API_KEY" type="password" autocomplete="off" maxlength="200" /></label>
+            <label>Browserbase key (reading pages) <a href="https://www.browserbase.com/settings" target="_blank" rel="noopener">get one</a> <span id="k-BROWSERBASE_API_KEY" class="muted"></span>
+              <input name="BROWSERBASE_API_KEY" type="password" autocomplete="off" maxlength="200" /></label>
+            <label>Browserbase project id <span id="k-BROWSERBASE_PROJECT_ID" class="muted"></span>
+              <input name="BROWSERBASE_PROJECT_ID" type="text" autocomplete="off" maxlength="200" /></label>
+            <p id="keysErr" class="muted" role="alert"></p>
+            <button type="submit">Save keys</button>
+          </form>
+        </fieldset>
+        <p class="muted">The cloud brain is used only if you paste a Gemini key or pick it in the tray.</p>
+        <button id="next0" type="button" class="primary" disabled>Next</button>
+      </section>
+
+      <section id="s1" aria-labelledby="h1" hidden>
+        <h1 id="h1">Step 2 of 3: what Couch may do</h1>
+        <ul>
+          <li>Search and open files in the folders you tick. Copy, move and downloads always ask first.</li>
+          <li>Find things on websites you name, play YouTube, dim the screen, launch apps, timers, notes.</li>
+          <li>Drive smart devices on your home network. Unlocking doors always asks first.</li>
+          <li>Never: run commands, delete files, send messages, pay, type passwords, change system settings.</li>
+        </ul>
+        <fieldset>
+          <legend>Folders I may look in</legend>
+          <div id="folders"></div>
+          <button id="addFolder" type="button">Add a folder...</button>
+        </fieldset>
+        <fieldset>
+          <legend>Voice</legend>
+          <label><input id="voice" type="checkbox" /> Use voice (off = text only, no audio leaves the machine)</label>
+        </fieldset>
+        <fieldset>
+          <legend>Devices</legend>
+          <label><input id="simHome" type="checkbox" /> Sim home (pretend devices to play with)</label>
+          <label><input id="lan" type="checkbox" /> Look for real devices on my network</label>
+        </fieldset>
+        <fieldset id="cloudBox" hidden>
+          <legend>Cloud brain</legend>
+          <label><input id="sendNames" type="checkbox" /> Send file names to the AI</label>
+          <label><input id="sendContents" type="checkbox" /> Send file contents to the AI when I ask about a file</label>
+        </fieldset>
+        <h2>What leaves this machine</h2>
+        <div id="privacy"></div>
+        <button id="save" type="button" class="primary">Looks right</button>
+      </section>
+
+      <section id="s2" aria-labelledby="h2q" hidden>
+        <h1 id="h2q">Step 3 of 3: five quick questions</h1>
+        <p class="muted">Answer out loud with the hotkey, or type. "Skip" works.</p>
+        <p id="qText" class="question" aria-live="polite"></p>
+        <form id="qForm" class="row">
+          <label for="qInput" class="sr-only">Your answer</label>
+          <input id="qInput" type="text" maxlength="300" autocomplete="off" />
+          <button type="submit" class="primary">Answer</button>
+          <button id="skip" type="button">Skip</button>
+        </form>
+      </section>
+
+      <section id="s3" hidden>
+        <h1>Done</h1>
+        <p>He is on the couch. Hold the hotkey or click him and ask for something. "Redo setup" lives in the tray.</p>
+        <button id="close" type="button" class="primary">Close</button>
+      </section>
+    </main>
+    <script type="module" src="./onboarding.ts"></script>
+  </body>
+</html>

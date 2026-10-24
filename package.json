@@ -1,0 +1,37 @@
+{
+  "name": "couch",
+  "version": "0.1.0",
+  "description": "A lazy pixel guy on a driving couch who runs errands on your desktop.",
+  "main": "dist/electron/main.js",
+  "license": "MIT",
+  "type": "commonjs",
+  "scripts": {
+    "start": "npm run build && electron .",
+    "dev": "tsc -p . && node -e \"require('vite').createServer({configFile:'vite.config.mts'}).then(s=>s.listen()).then(s=>require('child_process').spawn(require('electron'),['.'],{stdio:'inherit',env:{...process.env,VITE_DEV_SERVER_URL:s.resolvedUrls.local[0]}}).on('exit',()=>process.exit()))\"",
+    "build": "tsc -p . && vite build",
+    "typecheck": "tsc -p . --noEmit && tsc -p src --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@mastra/core": "^1.79.0",
+    "@sentry/electron": "^8.3.0",
+    "bonjour-service": "^1.4.4",
+    "dotenv": "^18.0.9",
+    "mammoth": "^1.13.0",
+    "minisearch": "^7.2.0",
+    "mongodb": "^7.7.0",
+    "node-ssdp": "^4.0.1",
+    "pdfjs-dist": "^6.4.299",
+    "playwright-core": "^1.64.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/node-ssdp": "^4.0.5",
+    "electron": "^45.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}

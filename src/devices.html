@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <title>Couch devices</title>
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+  <body class="devices">
+    <header class="dev-head">
+      <h1>Devices</h1>
+      <span>
+        <button id="compact" type="button" aria-pressed="false">Collapse</button>
+        <button id="hide" type="button" aria-label="Hide devices panel">✕</button>
+      </span>
+    </header>
+    <p id="none" class="muted" hidden>No devices. Turn on Sim home in the tray, or add some.</p>
+    <ul id="tiles" class="tiles" aria-live="polite"></ul>
+    <script type="module" src="./devices.ts"></script>
+  </body>
+</html>

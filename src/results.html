@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: https://i.ytimg.com; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <title>Couch results</title>
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+  <body class="results compact">
+    <header class="pop-head">
+      <button id="toggle" class="pop-summary" type="button" aria-expanded="false">Nothing yet</button>
+      <button id="close" class="pop-close" type="button" aria-label="Close">✕</button>
+    </header>
+    <main>
+      <h1 class="sr-only">Results</h1>
+      <p id="empty" class="muted">Nothing here yet. Ask me for a file, a video or the lamp.</p>
+      <button id="undo" class="undo" type="button" hidden>Undo last file change</button>
+      <ol id="cards" class="cards" aria-live="polite"></ol>
+    </main>
+    <dialog id="confirm" class="sheet" aria-labelledby="confirmTitle">
+      <h2 id="confirmTitle">You sure?</h2>
+      <dl>
+        <dt>Action</dt>
+        <dd id="cAction"></dd>
+        <dt>From</dt>
+        <dd id="cSource"></dd>
+        <dt>To</dt>
+        <dd id="cDest"></dd>
+        <dt>Size</dt>
+        <dd id="cSize"></dd>
+      </dl>
+      <img id="cImage" class="shot" alt="The screenshot that would be sent" hidden />
+      <div class="sheet-buttons">
+        <button id="yes" class="yes" type="button">Yes</button>
+        <button id="no" type="button">No</button>
+      </div>
+    </dialog>
+    <script type="module" src="./results.ts"></script>
+  </body>
+</html>
