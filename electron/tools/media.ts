@@ -4,7 +4,7 @@ import { BrowserWindow, shell } from 'electron';
 import { withBrowser } from './web';
 import { youtube, SerpDown, type Video } from './serp';
 import { recordPlay } from '../memory';
-import { ids, ref, ToolError, type Ctx, type Item, type Tool } from './rt';
+import { ids, ref, rt, ToolError, type Ctx, type Item, type Tool } from './rt';
 
 let player: BrowserWindow | null = null;
 export const playerBounds = () => (player && !player.isDestroyed() && player.isVisible() ? player.getBounds() : null);
@@ -85,6 +85,7 @@ export const mediaTools: Record<string, Tool<any>> = {
       const id = String(it.data.videoId ?? '');
       if (!/^[\w-]{11}$/.test(id)) throw new ToolError("That's not something I can play.", 'refuse');
       void recordPlay(it.title, String(it.data.channel ?? '')); // title + channel only (PRD 8)
+      rt.hideResults(); // it's playing: the options popup would only sit on top of it
       if (it.kind === 'song') {
         await shell.openExternal(`https://music.youtube.com/watch?v=${id}`);
         return { say: "On YouTube Music. I can't touch that tab, by the way." };

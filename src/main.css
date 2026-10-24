@@ -279,6 +279,16 @@ body.results {
   cursor: pointer;
 }
 
+/* the summary button fills the header, so the grip is the part you can grab to drag the popup */
+.pop-grip {
+  cursor: grab;
+  padding: 0 4px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--paper);
+  user-select: none;
+}
+
 .pop-summary {
   flex: 1;
   text-align: left;

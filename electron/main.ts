@@ -61,6 +61,7 @@ let phase: drive.Phase = 'idle';
 let listening = false;
 let skipAudio = false; // the user typed instead of talking: drop the half-recording
 let sayId = 0;
+let popupMoved = false; // the user dragged the results popup somewhere: keep it there
 let sleepTimer: NodeJS.Timeout | null = null;
 let sulkTimer: NodeJS.Timeout | null = null;
 
@@ -182,6 +183,7 @@ function createResults() {
     webPreferences: secure,
   });
   results.setAlwaysOnTop(true, 'floating');
+  results.on('will-move', () => (popupMoved = true)); // user drags only; our own setBounds does not fire it
   results.on('close', (e) => {
     if (quitting) return;
     e.preventDefault();
@@ -195,9 +197,14 @@ function placePopup(size: { width: number; height: number }) {
   const c = drive.couchBounds();
   const { width: w, height: h } = size;
   const area = screen.getDisplayMatching(c).workArea;
-  const x = c.x - w - 12 >= area.x ? c.x - w - 12 : c.x + c.width + 12;
-  const y = Math.min(Math.max(c.y + c.height - h, area.y), area.y + area.height - h);
-  results.setBounds({ x, y, width: w, height: h });
+  const fit = (x: number, y: number) => ({ x: Math.min(Math.max(x, area.x), area.x + area.width - w), y: Math.min(Math.max(y, area.y), area.y + area.height - h), width: w, height: h });
+  // Dragged by the user: keep their spot, only the size changes.
+  if (popupMoved) return results.setBounds(fit(results.getBounds().x, results.getBounds().y + results.getBounds().height - h));
+  let b = fit(c.x - w - 12 >= area.x ? c.x - w - 12 : c.x + c.width + 12, c.y + c.height - h);
+  // Never on top of the video player: slide left of it if they overlap.
+  const p = playerBounds();
+  if (p && b.x < p.x + p.width && p.x < b.x + w && b.y < p.y + p.height && p.y < b.y + h) b = fit(p.x - w - 12, b.y);
+  results.setBounds(b);
 }
 
 /** Show the results popup beside the couch without taking focus. */
@@ -916,6 +923,7 @@ app.whenReady().then(() => {
     say: (t: string) => say(t),
     progress: (t: string) => emit(couch, { t: 'say', id: ++sayId, text: t }),
     raise: () => couch.moveTop(),
+    hideResults: () => results.hide(),
     runScheduled: workflow.runScheduled,
   });
   onboarding.initOnboarding({ win: setupWindow, settings: () => settings, save: saveAndApply, say: (t) => say(t), done: startFiles });

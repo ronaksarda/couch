@@ -69,6 +69,8 @@ export const rt = {
   progress: (_text: string) => undefined as void,
   /** Keep the couch above overlays it created. */
   raise: () => undefined as void,
+  /** Put the results popup away (a video started: the popup would only cover it). */
+  hideResults: () => undefined as void,
   /** Run a T0/T1 step that a schedule fired (the couch drives to it). */
   runScheduled: async (_step: Step, _label: string) => undefined as void,
 };
